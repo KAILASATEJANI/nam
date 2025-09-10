@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { 
@@ -12,7 +13,8 @@ import {
   Sun,
   MessageSquare,
   ChevronDown,
-  Menu
+  Menu,
+  Home
 } from 'lucide-react';
 
 const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
@@ -23,6 +25,7 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
   const [showProfile, setShowProfile] = useState(false);
   const [language, setLanguage] = useState('en');
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   const notifications = [
     { id: 1, message: 'Class CS301 moved to Room 205', time: '2 hours ago', type: 'info', unread: true },
@@ -86,6 +89,41 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
           }}
         >
           <Menu size={20} />
+        </button>
+
+        {/* Home Button */}
+        <button
+          onClick={() => {
+            if (user?.role === 'student') navigate('/student/dashboard');
+            else if (user?.role === 'faculty') navigate('/faculty');
+            else if (user?.role === 'hod') navigate('/hod');
+            else if (user?.role === 'admin') navigate('/admin');
+            else navigate('/');
+          }}
+          title="Home"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '40px',
+            height: '40px',
+            background: 'transparent',
+            border: 'none',
+            borderRadius: borderRadius.md,
+            cursor: 'pointer',
+            color: currentColors.textSecondary,
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = currentColors.borderLight;
+            e.target.style.color = currentColors.text;
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'transparent';
+            e.target.style.color = currentColors.textSecondary;
+          }}
+        >
+          <Home size={20} />
         </button>
 
         {/* Search Bar */}

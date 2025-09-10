@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // Components
 import Login from './components/Login';
 import StudentDashboard from './components/StudentDashboard';
+import StudentFees from './components/StudentFees';
 import FacultyDashboard from './components/FacultyDashboard';
 import HODDashboard from './components/HODDashboard';
 import AdminDashboard from './components/AdminDashboard';
@@ -46,6 +47,7 @@ function AppContent() {
               <Route path="/" element={<Navigate to={user.role === 'student' ? '/student/dashboard' : `/${user.role}`} />} />
               <Route path="/student" element={<Navigate to="/student/dashboard" />} />
               <Route path="/student/dashboard" element={<StudentDashboard />} />
+              <Route path="/student/fees" element={<StudentFees />} />
               <Route path="/faculty" element={<FacultyDashboard />} />
               <Route path="/hod" element={<HODDashboard />} />
               <Route path="/admin" element={<AdminDashboard />} />

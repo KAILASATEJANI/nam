@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggle from './ThemeToggle';
@@ -22,6 +23,7 @@ const StudentSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }
   const { user } = useAuth();
   const { isDarkMode, colors, typography } = useTheme();
   const currentColors = isDarkMode ? colors.dark : colors.light;
+  const navigate = useNavigate();
   
   const menuItems = [
     { id: 'timetable', label: 'My Timetable', icon: Calendar, color: '#4A90E2' },
@@ -101,7 +103,13 @@ const StudentSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }
                 icon={<Icon size={20} style={{ color: activeTab === item.id ? currentColors.sidebarAccent : 'currentColor' }} />}
                 label={!isCollapsed ? item.label : ''}
                 active={activeTab === item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  if (item.id === 'fees') {
+                    navigate('/student/fees');
+                  } else {
+                    setActiveTab(item.id);
+                  }
+                }}
                 style={{
                   marginBottom: '4px',
                   position: 'relative'

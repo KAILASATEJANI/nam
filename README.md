@@ -1,6 +1,6 @@
 # 🎓 Smart Classroom & Timetable Scheduler
 
-A comprehensive educational management system built with React.js and Node.js, featuring role-based dashboards, Material Design UI, and advanced scheduling capabilities.
+A full‑stack, role‑based education platform built with React 18 and Node/Express. It includes modern Material Design UI, real‑time updates via Socket.io, analytics with Chart.js, and end‑to‑end student fee management with QR payments.
 
 ## 📋 Table of Contents
 
@@ -20,25 +20,20 @@ A comprehensive educational management system built with React.js and Node.js, f
 ## 🚀 Features Overview
 
 ### Core Features
-- **Multi-Role Authentication System** (Student, Faculty, HOD, Admin)
-- **Smart Timetable Management** with drag-and-drop scheduling
-- **Real-time Attendance Tracking** with QR code integration
-- **Fee Management System** with online payment integration
-- **AI-Powered Chatbot** for student assistance
-- **Material Design UI** with dark/light mode toggle
-- **Responsive Design** for all device sizes
-- **Real-time Notifications** system
-- **File Management** for study materials
-- **Analytics Dashboard** with comprehensive reports
+- **Multi‑Role Authentication** (Student, Faculty, HOD, Admin)
+- **Student Dashboard** with weekly timetable, attendance, materials, fees, notifications, analytics, and booking
+- **Real‑time Attendance & Notifications** via Socket.io
+- **Fee Management** (structure, status, payments, receipts) with QR code (UPI) support
+- **AI Chatbot** for instant assistance
+- **Material Design UI + Theme** (dark/light, Roboto, ripple, floating labels)
+- **Responsive** on mobile/tablet/desktop
 
 ### Advanced Features
-- **QR Code Generation** for attendance and payments
-- **Multi-language Support** (English, Hindi, Gujarati)
-- **Parent Login System** (planned)
-- **AI Fee Prediction** algorithms
-- **Bank Reconciliation** reports
-- **Scholarship Management** workflow
-- **Room Booking System** for labs and classrooms
+- **QR Code Generation** for attendance & payments
+- **Multi‑language support** (English, Hindi, Gujarati)
+- **Scholarship Management** workflow (student & admin)
+- **Room Booking** for labs/classrooms
+- Planned: Parent login, fee prediction, reconciliation reports
 
 ## 🛠 Technology Stack
 
@@ -71,7 +66,7 @@ A comprehensive educational management system built with React.js and Node.js, f
 ## 📁 Project Structure
 
 ```
-STU DE/
+WEB-ABOUT-SCHOOL-/
 ├── public/
 │   ├── index.html
 │   └── favicon.ico
@@ -82,7 +77,7 @@ STU DE/
 │   │   │   ├── Card.js            # Elevated cards with shadows
 │   │   │   ├── Input.js           # Floating label inputs
 │   │   │   └── Sidebar.js         # Navigation sidebar
-│   │   ├── StudentDashboard.js    # Student interface
+│   │   ├── StudentDashboard.js    # Student interface (main dashboard)
 │   │   ├── FacultyDashboard.js    # Faculty interface
 │   │   ├── HODDashboard.js        # HOD interface
 │   │   ├── AdminDashboard.js      # Admin interface
@@ -102,7 +97,7 @@ STU DE/
 │   ├── models/                    # Database models
 │   ├── routes/                    # API routes
 │   ├── middleware/                # Custom middleware
-│   └── server.js                  # Server entry point
+│   └── index.js                   # Server entry point
 ├── package.json
 └── README.md
 ```
@@ -120,6 +115,23 @@ STU DE/
 - **AI Chatbot** - Get instant help and answers
 - **Progress Analytics** - Academic performance insights
 - **Room Booking** - Reserve study spaces
+
+Implementation details:
+- Renders within layout: `TopNavbar` (header) and `StudentSidebar` (left)
+- Uses UI components from `src/components/ui/` (`Card`, `Button`, `Input`, `Sidebar`)
+- Real‑time via Socket.io client: joins `student:{studentId}` room for live notifications/attendance
+- Charts: `chart.js` + `react-chartjs-2` (Pie, Line)
+- QR code: `qrcode.react` (`QRCodeCanvas`) for payments and check‑ins
+- API usage (frontend):
+  - `GET /api/student/timetable` → timetable grid
+  - `GET /api/student/attendance` → summary and per‑subject breakdown
+  - `GET /api/student/materials` → downloadable resources
+  - `GET /api/student/fees` → summary, structure, transactions
+  - `POST /api/student/fees/payment` → submit payment
+  - `GET /api/student/notifications` → initial notifications list
+  - `GET /api/student/analytics` → charts data
+  - `POST /api/student/bookings` → create booking
+  - Socket channels (example): `student:{id}:notifications`, `student:{id}:attendance`
 
 ### 👨‍🏫 Faculty Dashboard
 **Location**: `src/components/FacultyDashboard.js`
@@ -198,21 +210,20 @@ cd "STU DE"
    npm install
    ```
 
-3. **Start the development server**
-   ```bash
-   npm start
+3. **Start the backend (PowerShell on Windows)**
+   ```powershell
+   powershell -NoLogo -NoProfile -Command "Set-Location server; npm ci --no-audit --fund=false; npm run start"
+   # Server: http://localhost:5001
    ```
 
-4. **Start the backend server** (in a new terminal)
-```bash
-cd server
-npm install
-npm start
-```
+4. **Start the frontend (new terminal)**
+   ```powershell
+   powershell -NoLogo -NoProfile -Command "npm ci --no-audit --fund=false; npm start"
+   # App: http://localhost:3001 (CRA dev server)
+   ```
 
-5. **Access the application**
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:5000`
+5. **Login**
+- Any email/password works in demo. Choose role in the login form.
 
 ## 🔌 API Endpoints
 
@@ -222,11 +233,14 @@ npm start
 - `GET /api/auth/verify` - Verify token
 
 ### Student APIs
-- `GET /api/student/dashboard` - Student dashboard data
 - `GET /api/student/timetable` - Student timetable
 - `GET /api/student/attendance` - Attendance records
+- `GET /api/student/materials` - Study materials
 - `GET /api/student/fees` - Fee information
-- `POST /api/student/payment` - Make payment
+- `POST /api/student/fees/payment` - Make payment
+- `GET /api/student/notifications` - Notifications
+- `GET /api/student/analytics` - Analytics data
+- `POST /api/student/bookings` - Create booking
 
 ### Faculty APIs
 - `GET /api/faculty/dashboard` - Faculty dashboard data

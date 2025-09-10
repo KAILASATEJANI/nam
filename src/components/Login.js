@@ -29,7 +29,7 @@ const Login = () => {
       if (result.success) {
         toast.success('Login successful!');
         // Route to role-specific dashboard immediately
-        if (credentials.role === 'student') navigate('/student/dashboard');
+        if (credentials.role === 'student') navigate('/student/fees');
         else if (credentials.role === 'faculty') navigate('/faculty');
         else if (credentials.role === 'hod') navigate('/hod');
         else if (credentials.role === 'admin') navigate('/admin');
@@ -60,26 +60,33 @@ const Login = () => {
   return (
     <div className="login-container" style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)',
+      background: 'linear-gradient(135deg, #e0f2ff 0%, #eef2ff 40%, #dbeafe 100%)',
+      backgroundImage: `radial-gradient(60rem 30rem at -10% -20%, rgba(99,102,241,0.20) 0%, rgba(99,102,241,0) 60%),
+                        radial-gradient(40rem 20rem at 110% 120%, rgba(14,165,233,0.18) 0%, rgba(14,165,233,0) 60%),
+                        repeating-linear-gradient(45deg, rgba(99,102,241,0.04) 0px, rgba(99,102,241,0.04) 2px, transparent 2px, transparent 6px)`,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px'
     }}>
+      <style>{`@media (max-width: 768px){.login-card{flex-direction:column;max-width:560px}.login-illustration{display:none}}`}</style>
       <div className="login-card" style={{
-        background: 'white',
-        borderRadius: '20px',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        background: 'rgba(255,255,255,0.55)',
+        border: '1px solid rgba(255,255,255,0.35)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderRadius: '28px',
+        boxShadow: '0 30px 60px rgba(30,58,138,0.18), inset 0 1px 0 rgba(255,255,255,0.6)',
         overflow: 'hidden',
-        maxWidth: '1000px',
+        maxWidth: '1060px',
         width: '100%',
         display: 'flex',
-        minHeight: '600px'
+        minHeight: '640px'
       }}>
         {/* Left Section - Illustration */}
         <div className="login-illustration" style={{
-          flex: '1',
-          background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)',
+          flex: '1.05',
+          background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #38bdf8 100%)',
           padding: '60px 40px',
           display: 'flex',
           flexDirection: 'column',
@@ -95,19 +102,21 @@ const Login = () => {
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#45b7d1' }}></div>
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f9ca24' }}></div>
             </div>
-            <h2 style={{ color: 'white', fontSize: '24px', fontWeight: '700', margin: 0 }}>SMART TIMETABLE</h2>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px', margin: '8px 0 0 0' }}>AI-Powered Educational Management</p>
+            <h2 style={{ color: 'white', fontSize: '26px', fontWeight: '800', margin: 0, letterSpacing: '0.5px' }}>SMART TIMETABLE</h2>
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '14px', margin: '8px 0 0 0' }}>AI-Powered Educational Management</p>
           </div>
 
           {/* Illustration */}
           <div className="illustration" style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
             {/* Monitor */}
             <div style={{
-              width: '200px',
-              height: '120px',
-              backgroundColor: '#e8f5e8',
-              borderRadius: '12px',
-              border: '3px solid #4ecdc4',
+              width: '220px',
+              height: '140px',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05))',
+              borderRadius: '16px',
+              border: '1px solid rgba(255,255,255,0.35)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(6px)',
               position: 'relative',
               margin: '0 auto'
             }}>
@@ -195,25 +204,27 @@ const Login = () => {
         {/* Right Section - Login Form */}
         <div className="login-form" style={{
           flex: '1',
-          padding: '60px 40px',
+          padding: '60px 48px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.35))',
+          backdropFilter: 'blur(8px)'
         }}>
           <div className="form-header" style={{ marginBottom: '40px' }}>
             <h2 style={{ 
-              color: '#2c3e50', 
+              color: '#0f172a', 
               fontSize: '28px', 
-              fontWeight: '700', 
+              fontWeight: '800', 
               margin: '0 0 10px 0' 
             }}>
               Login as a {credentials.role.charAt(0).toUpperCase() + credentials.role.slice(1)} User
             </h2>
             <div style={{
-              width: '60px',
+              width: '68px',
               height: '4px',
-              backgroundColor: '#667eea',
-              borderRadius: '2px'
+              background: 'linear-gradient(90deg, #38bdf8, #6366f1)',
+              borderRadius: '999px'
             }}></div>
           </div>
 
@@ -236,15 +247,21 @@ const Login = () => {
                     type="button"
                     onClick={() => setCredentials({...credentials, role: role.value})}
                     style={{
-                      padding: '8px 16px',
-                      borderRadius: '20px',
-                      border: credentials.role === role.value ? `2px solid ${role.color}` : '2px solid #e9ecef',
-                      backgroundColor: credentials.role === role.value ? `${role.color}20` : 'white',
-                      color: credentials.role === role.value ? role.color : '#6c757d',
+                      padding: '10px 18px',
+                      borderRadius: '999px',
+                      border: '1px solid rgba(99,102,241,0.25)',
+                      background: credentials.role === role.value
+                        ? 'linear-gradient(180deg, rgba(99,102,241,0.18), rgba(14,165,233,0.14))'
+                        : 'rgba(255,255,255,0.6)',
+                      color: credentials.role === role.value ? role.color : '#334155',
+                      boxShadow: credentials.role === role.value
+                        ? '0 6px 16px rgba(99,102,241,0.25)'
+                        : 'inset 0 1px 0 rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.04)',
                       fontSize: '12px',
-                      fontWeight: '600',
+                      fontWeight: '700',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.25s ease',
+                      backdropFilter: 'blur(6px)'
                     }}
                   >
                     {role.label}
@@ -258,7 +275,7 @@ const Login = () => {
               <label style={{ 
                 display: 'block', 
                 marginBottom: '8px', 
-                color: '#2c3e50', 
+                color: '#0f172a', 
                 fontWeight: '600',
                 fontSize: '14px'
               }}>
@@ -272,15 +289,18 @@ const Login = () => {
                   onChange={handleInputChange}
                   style={{
                     width: '100%',
-                    padding: '15px 50px 15px 20px',
-                    border: '2px solid #e9ecef',
-                    borderRadius: '10px',
+                    padding: '16px 50px 16px 20px',
+                    borderRadius: '14px',
                     fontSize: '16px',
                     outline: 'none',
-                    transition: 'border-color 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    background: 'rgba(255,255,255,0.7)',
+                    border: '1px solid rgba(99,102,241,0.25)',
+                    boxShadow: 'inset 0 2px 8px rgba(2,6,23,0.06), 0 1px 0 rgba(255,255,255,0.8)',
+                    backdropFilter: 'blur(6px)'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#667eea'}
-                  onBlur={(e) => e.target.style.borderColor = '#e9ecef'}
+                  onFocus={(e) => { e.target.style.borderColor = '#6366f1'; e.target.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.18)'; }}
+                  onBlur={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.25)'; e.target.style.boxShadow = 'inset 0 2px 8px rgba(2,6,23,0.06), 0 1px 0 rgba(255,255,255,0.8)'; }}
                   required
                 />
                 <User 
@@ -290,7 +310,7 @@ const Login = () => {
                     right: '15px', 
                     top: '50%', 
                     transform: 'translateY(-50%)',
-                    color: '#6c757d'
+                    color: '#64748b'
                   }} 
                 />
               </div>
@@ -301,7 +321,7 @@ const Login = () => {
               <label style={{ 
                 display: 'block', 
                 marginBottom: '8px', 
-                color: '#2c3e50', 
+                color: '#0f172a', 
                 fontWeight: '600',
                 fontSize: '14px'
               }}>
@@ -315,15 +335,18 @@ const Login = () => {
                   onChange={handleInputChange}
                   style={{
                     width: '100%',
-                    padding: '15px 50px 15px 20px',
-                    border: '2px solid #e9ecef',
-                    borderRadius: '10px',
+                    padding: '16px 50px 16px 20px',
+                    borderRadius: '14px',
                     fontSize: '16px',
                     outline: 'none',
-                    transition: 'border-color 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    background: 'rgba(255,255,255,0.7)',
+                    border: '1px solid rgba(99,102,241,0.25)',
+                    boxShadow: 'inset 0 2px 8px rgba(2,6,23,0.06), 0 1px 0 rgba(255,255,255,0.8)',
+                    backdropFilter: 'blur(6px)'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#667eea'}
-                  onBlur={(e) => e.target.style.borderColor = '#e9ecef'}
+                  onFocus={(e) => { e.target.style.borderColor = '#6366f1'; e.target.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.18)'; }}
+                  onBlur={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.25)'; e.target.style.boxShadow = 'inset 0 2px 8px rgba(2,6,23,0.06), 0 1px 0 rgba(255,255,255,0.8)'; }}
                   required
                 />
                 <button
@@ -337,7 +360,7 @@ const Login = () => {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: '#6c757d'
+                    color: '#64748b'
                   }}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -351,21 +374,21 @@ const Login = () => {
               disabled={loading}
               style={{
                 width: '100%',
-                padding: '15px',
-                backgroundColor: '#667eea',
+                padding: '16px',
+                background: 'linear-gradient(90deg, #38bdf8, #6366f1)',
                 color: 'white',
-                border: 'none',
-                borderRadius: '10px',
+                border: '1px solid rgba(255,255,255,0.35)',
+                borderRadius: '14px',
                 fontSize: '16px',
-                fontWeight: '700',
+                fontWeight: '800',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
+                transition: 'all 0.25s ease',
                 opacity: loading ? 0.7 : 1,
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
+                letterSpacing: '0.6px',
+                boxShadow: '0 12px 24px rgba(99,102,241,0.30), 0 6px 12px rgba(56,189,248,0.25)'
               }}
-              onMouseOver={(e) => !loading && (e.target.style.backgroundColor = '#5a6fd8')}
-              onMouseOut={(e) => !loading && (e.target.style.backgroundColor = '#667eea')}
+              onMouseOver={(e) => !loading && (e.target.style.transform = 'translateY(-1px) scale(1.01)')}
+              onMouseOut={(e) => !loading && (e.target.style.transform = 'none')}
             >
               {loading ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
@@ -373,7 +396,7 @@ const Login = () => {
                   Signing In...
                 </div>
               ) : (
-                'LOGIN'
+                'Sign In'
               )}
             </button>
           </form>
@@ -413,10 +436,12 @@ const Login = () => {
           <div style={{ 
             marginTop: '30px', 
             padding: '15px', 
-            backgroundColor: '#f8f9fa', 
-            borderRadius: '10px',
+            background: 'rgba(255,255,255,0.65)',
+            border: '1px solid rgba(99,102,241,0.15)',
+            borderRadius: '14px',
             fontSize: '12px',
-            color: '#6c757d'
+            color: '#475569',
+            backdropFilter: 'blur(6px)'
           }}>
             <strong style={{ color: '#2c3e50' }}>Universal Login:</strong> You can login with any email address. The system will automatically assign the selected role.
           </div>
