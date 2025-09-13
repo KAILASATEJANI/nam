@@ -95,9 +95,12 @@ const StudentFees = () => {
       }}>
       <StudentSidebar 
         activeTab={'fees'} 
-        setActiveTab={() => {
-          // Only Fees is available now; ensure we stay on Fees
-          navigate('/student/fees');
+        setActiveTab={(tabId) => {
+          if (tabId === 'fees') {
+            navigate('/student/fees');
+          } else {
+            navigate(`/student/dashboard?tab=${tabId}`);
+          }
         }} 
         isCollapsed={isCollapsed} 
         setIsCollapsed={setIsCollapsed} 

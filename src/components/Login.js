@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { User, Lock, Shield, Eye, EyeOff } from 'lucide-react';
+import { User, Lock, Shield, Eye, EyeOff, LogOut } from 'lucide-react';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -12,7 +12,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -29,7 +29,7 @@ const Login = () => {
       if (result.success) {
         toast.success('Login successful!');
         // Route to role-specific dashboard immediately
-        if (credentials.role === 'student') navigate('/student/fees');
+        if (credentials.role === 'student') navigate('/student/dashboard');
         else if (credentials.role === 'faculty') navigate('/faculty');
         else if (credentials.role === 'hod') navigate('/hod');
         else if (credentials.role === 'admin') navigate('/admin');
@@ -48,6 +48,11 @@ const Login = () => {
       ...credentials,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully!');
   };
 
   const roleOptions = [
@@ -70,11 +75,12 @@ const Login = () => {
       padding: '20px'
     }}>
       <style>{`
-        @media (max-width: 768px) {
+        /* Enhanced Responsive Login Styles */
+        @media (max-width: 991px) {
           .login-card {
             flex-direction: column !important;
-            max-width: 100% !important;
-            margin: 20px !important;
+            max-width: 95% !important;
+            margin: 20px auto !important;
             min-height: auto !important;
           }
           .login-illustration {
@@ -84,7 +90,28 @@ const Login = () => {
             padding: 40px 20px !important;
           }
         }
-        @media (max-width: 480px) {
+        
+        @media (max-width: 768px) {
+          .login-container {
+            padding: 15px !important;
+          }
+          .login-card {
+            margin: 15px auto !important;
+            border-radius: 24px !important;
+          }
+          .login-form {
+            padding: 35px 20px !important;
+          }
+          .form-header h2 {
+            font-size: 24px !important;
+          }
+          .clear-session-btn {
+            padding: 6px 10px !important;
+            font-size: 11px !important;
+          }
+        }
+        
+        @media (max-width: 576px) {
           .login-container {
             padding: 10px !important;
           }
@@ -98,6 +125,9 @@ const Login = () => {
           .form-header h2 {
             font-size: 22px !important;
           }
+          .clear-session-btn {
+            display: none !important;
+          }
           .role-buttons {
             flex-direction: column !important;
             gap: 8px !important;
@@ -105,6 +135,86 @@ const Login = () => {
           .role-buttons button {
             width: 100% !important;
           }
+        }
+        
+        @media (max-width: 480px) {
+          .login-form {
+            padding: 25px 12px !important;
+          }
+          .form-header h2 {
+            font-size: 20px !important;
+          }
+          .form-header {
+            margin-bottom: 30px !important;
+          }
+        }
+        
+        /* Landscape orientation for mobile */
+        @media (orientation: landscape) and (max-height: 500px) {
+          .login-container {
+            padding: 5px !important;
+          }
+          .login-card {
+            min-height: auto !important;
+            max-height: 95vh !important;
+            overflow-y: auto !important;
+          }
+          .login-illustration {
+            min-height: 120px !important;
+            padding: 15px !important;
+          }
+          .login-form {
+            padding: 20px 15px !important;
+          }
+          .form-header {
+            margin-bottom: 20px !important;
+          }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+          .role-buttons button {
+            min-height: 44px !important;
+            padding: 12px 18px !important;
+          }
+          input[type="email"], input[type="password"] {
+            min-height: 44px !important;
+            font-size: 16px !important; /* Prevents zoom on iOS */
+          }
+          button[type="submit"] {
+            min-height: 48px !important;
+          }
+        }
+        
+        /* Fix for iOS Safari input zoom */
+        @supports (-webkit-touch-callout: none) {
+          input[type="email"], input[type="password"] {
+            font-size: 16px !important;
+            transform: translateZ(0);
+          }
+        }
+        
+        /* Prevent text selection on buttons */
+        .role-buttons button,
+        button[type="submit"] {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Smooth transitions */
+        .login-card {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Fix for layout shift */
+        .login-container {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       `}</style>
       <div className="login-card" style={{
@@ -249,14 +359,43 @@ const Login = () => {
           backdropFilter: 'blur(8px)'
         }}>
           <div className="form-header" style={{ marginBottom: '40px' }}>
-            <h2 style={{ 
-              color: '#0f172a', 
-              fontSize: '28px', 
-              fontWeight: '800', 
-              margin: '0 0 10px 0' 
-            }}>
-              Login as a {credentials.role.charAt(0).toUpperCase() + credentials.role.slice(1)} User
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <h2 style={{ 
+                color: '#0f172a', 
+                fontSize: '28px', 
+                fontWeight: '800', 
+                margin: 0 
+              }}>
+                Login as a {credentials.role.charAt(0).toUpperCase() + credentials.role.slice(1)} User
+              </h2>
+              <button
+                className="clear-session-btn"
+                onClick={handleLogout}
+                style={{
+                  padding: '8px 12px',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  borderRadius: '8px',
+                  color: '#dc2626',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.2)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                }}
+              >
+                <LogOut size={14} />
+                Clear Session
+              </button>
+            </div>
             <div style={{
               width: '68px',
               height: '4px',

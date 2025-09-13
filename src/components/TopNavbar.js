@@ -45,7 +45,8 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
   return (
     <>
       <style>{`
-        @media (max-width: 768px) {
+        /* Enhanced TopNavbar Responsive Styles */
+        @media (max-width: 991px) {
           .top-navbar {
             left: 0 !important;
             padding: 0 16px !important;
@@ -65,11 +66,33 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
             width: 200px !important;
           }
         }
-        @media (max-width: 480px) {
+        
+        @media (max-width: 768px) {
           .top-navbar {
             padding: 0 12px !important;
           }
+          .navbar-right {
+            gap: 6px !important;
+          }
           .navbar-right button {
+            padding: 6px !important;
+          }
+          .home-btn, .menu-btn {
+            padding: 8px !important;
+          }
+        }
+        
+        @media (max-width: 576px) {
+          .top-navbar {
+            padding: 0 8px !important;
+          }
+          .navbar-right {
+            gap: 4px !important;
+          }
+          .navbar-right button {
+            padding: 4px !important;
+          }
+          .home-btn, .menu-btn {
             padding: 6px !important;
           }
           .notification-badge {
@@ -77,6 +100,61 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
             min-width: 16px !important;
             height: 16px !important;
           }
+        }
+        
+        @media (max-width: 480px) {
+          .top-navbar {
+            padding: 0 6px !important;
+          }
+          .navbar-right button {
+            padding: 3px !important;
+          }
+          .home-btn, .menu-btn {
+            padding: 4px !important;
+          }
+          .profile-dropdown {
+            width: 180px !important;
+            right: 8px !important;
+          }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+          .navbar-right button,
+          .home-btn,
+          .menu-btn {
+            min-height: 44px !important;
+            min-width: 44px !important;
+          }
+        }
+        
+        /* Performance optimizations */
+        .top-navbar {
+          will-change: transform;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+        
+        .navbar-right button,
+        .home-btn,
+        .menu-btn {
+          -webkit-tap-highlight-color: transparent;
+          -webkit-user-select: none;
+          user-select: none;
+          transition: all 0.2s ease;
+        }
+        
+        .navbar-right button:active,
+        .home-btn:active,
+        .menu-btn:active {
+          transform: scale(0.95);
+        }
+        
+        /* Fix for dropdown positioning */
+        .profile-dropdown {
+          will-change: transform, opacity;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
         }
       `}</style>
       <div className="top-navbar" style={{
@@ -102,6 +180,7 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg, flex: 1 }}>
         {/* Mobile Menu Button */}
         <button
+          className="menu-btn"
           onClick={onToggleSidebar}
           style={{
             display: 'flex',
@@ -132,36 +211,83 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
 
         {/* Home Button */}
         <button
+          className="home-btn"
           onClick={() => {
-            if (user?.role === 'student') navigate('/student/dashboard');
-            else if (user?.role === 'faculty') navigate('/faculty');
-            else if (user?.role === 'hod') navigate('/hod');
-            else if (user?.role === 'admin') navigate('/admin');
-            else navigate('/');
+            console.log('Home button clicked');
+            console.log('User object:', user);
+            console.log('User role:', user?.role);
+            console.log('Navigate function:', navigate);
+            
+            if (!user) {
+              console.log('No user found, navigating to login');
+              navigate('/');
+              return;
+            }
+            
+            try {
+              if (user.role === 'student') {
+                console.log('Navigating to student dashboard');
+                navigate('/student/dashboard');
+              } else if (user.role === 'faculty') {
+                console.log('Navigating to faculty dashboard');
+                navigate('/faculty');
+              } else if (user.role === 'hod') {
+                console.log('Navigating to HOD dashboard');
+                navigate('/hod');
+              } else if (user.role === 'admin') {
+                console.log('Navigating to admin dashboard');
+                navigate('/admin');
+              } else {
+                console.log('Unknown role, navigating to root');
+                navigate('/');
+              }
+            } catch (error) {
+              console.error('Navigation failed, using window.location:', error);
+              // Fallback navigation
+              if (user.role === 'student') {
+                window.location.href = '/student/dashboard';
+              } else if (user.role === 'faculty') {
+                window.location.href = '/faculty';
+              } else if (user.role === 'hod') {
+                window.location.href = '/hod';
+              } else if (user.role === 'admin') {
+                window.location.href = '/admin';
+              } else {
+                window.location.href = '/';
+              }
+            }
           }}
-          title="Home"
+          title="Go to Dashboard Home"
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             width: '40px',
             height: '40px',
-            background: 'transparent',
-            border: 'none',
+            background: 'rgba(102, 126, 234, 0.1)',
+            border: '1px solid rgba(102, 126, 234, 0.2)',
             borderRadius: borderRadius.md,
             cursor: 'pointer',
-            color: currentColors.textSecondary,
-            transition: 'all 0.2s ease'
+            color: currentColors.primary,
+            transition: 'all 0.2s ease',
+            position: 'relative',
+            zIndex: 1000,
+            minWidth: '40px',
+            minHeight: '40px'
           }}
           onMouseEnter={(e) => {
             const el = e.currentTarget;
-            el.style.background = currentColors.borderLight;
-            el.style.color = currentColors.text;
+            el.style.background = 'rgba(102, 126, 234, 0.2)';
+            el.style.borderColor = 'rgba(102, 126, 234, 0.4)';
+            el.style.color = currentColors.primary;
+            el.style.transform = 'scale(1.05)';
           }}
           onMouseLeave={(e) => {
             const el = e.currentTarget;
-            el.style.background = 'transparent';
-            el.style.color = currentColors.textSecondary;
+            el.style.background = 'rgba(102, 126, 234, 0.1)';
+            el.style.borderColor = 'rgba(102, 126, 234, 0.2)';
+            el.style.color = currentColors.primary;
+            el.style.transform = 'scale(1)';
           }}
         >
           <Home size={20} />

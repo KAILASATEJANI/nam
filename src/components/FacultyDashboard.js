@@ -750,7 +750,10 @@ const FacultyDashboard = () => {
     <div style={{ display: 'flex', minHeight: '100vh', background: currentColors.background }}>
       <FacultySidebar activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       <div style={{ flex: 1, marginLeft: isCollapsed ? '80px' : '280px', transition: 'margin-left 0.3s ease' }}>
-        <TopNavbar isCollapsed={isCollapsed} />
+        <TopNavbar 
+          isCollapsed={isCollapsed} 
+          onToggleSidebar={() => setIsCollapsed(!isCollapsed)} 
+        />
         <div style={{ padding: '100px 30px 30px 30px' }}>
           {renderContent()}
         </div>

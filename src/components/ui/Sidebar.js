@@ -33,7 +33,7 @@ const Sidebar = ({
         @media (max-width: 768px) {
           .ui-sidebar {
             transform: translateX(-100%) !important;
-            transition: transform 0.3s ease !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
           }
           .ui-sidebar.ui-sidebar--mobile-open {
             transform: translateX(0) !important;
@@ -41,6 +41,29 @@ const Sidebar = ({
           .ui-sidebar--collapsed {
             transform: translateX(-100%) !important;
           }
+        }
+        
+        /* Performance optimizations */
+        .ui-sidebar {
+          will-change: transform;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+        }
+        
+        /* Fix for iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+          .ui-sidebar {
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+          }
+        }
+        
+        /* Smooth scrolling */
+        .ui-sidebar {
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
         }
       `}</style>
       <aside 

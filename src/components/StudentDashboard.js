@@ -909,7 +909,8 @@ const StudentDashboard = () => {
   return (
     <>
       <style>{`
-        @media (max-width: 768px) {
+        /* Enhanced Dashboard Responsive Styles */
+        @media (max-width: 991px) {
           .dashboard-main {
             margin-left: 0 !important;
             padding-top: 64px !important;
@@ -943,7 +944,20 @@ const StudentDashboard = () => {
             min-width: 600px !important;
           }
         }
-        @media (max-width: 480px) {
+        
+        @media (max-width: 768px) {
+          .dashboard-content {
+            padding: 14px !important;
+          }
+          .card {
+            padding: 14px !important;
+          }
+          .timetable-grid {
+            min-width: 550px !important;
+          }
+        }
+        
+        @media (max-width: 576px) {
           .dashboard-content {
             padding: 12px !important;
           }
@@ -953,6 +967,86 @@ const StudentDashboard = () => {
           .timetable-grid {
             min-width: 500px !important;
           }
+        }
+        
+        @media (max-width: 480px) {
+          .dashboard-content {
+            padding: 10px !important;
+          }
+          .card {
+            padding: 10px !important;
+          }
+          .timetable-grid {
+            min-width: 450px !important;
+          }
+        }
+        
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+          .card {
+            border-radius: 12px !important;
+          }
+          .timetable-cell {
+            min-height: 60px !important;
+          }
+          button {
+            min-height: 44px !important;
+            min-width: 44px !important;
+          }
+        }
+        
+        /* Landscape orientation for mobile */
+        @media (orientation: landscape) and (max-height: 500px) {
+          .dashboard-content {
+            padding: 8px !important;
+          }
+          .card {
+            padding: 8px !important;
+            margin-bottom: 8px !important;
+          }
+        }
+        
+        /* Performance optimizations */
+        .dashboard-main {
+          will-change: margin-left;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+        
+        .dashboard-content {
+          will-change: padding;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+        
+        .card {
+          will-change: transform, box-shadow;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+        
+        /* Fix for iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+          .card {
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+          }
+        }
+        
+        /* Smooth scrolling for timetable */
+        .timetable-card {
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
+        }
+        
+        /* Fix for layout shift */
+        .dashboard-grid-2fr-1fr,
+        .dashboard-grid-1fr-1fr,
+        .dashboard-grid-3fr,
+        .dashboard-grid-2fr {
+          will-change: grid-template-columns;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
         }
       `}</style>
       <div style={{ 
