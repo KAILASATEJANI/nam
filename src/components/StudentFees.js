@@ -57,13 +57,42 @@ const StudentFees = () => {
   );
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh', 
-      background: currentColors.background,
-      fontFamily: typography.fontFamily,
-      position: 'relative'
-    }}>
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .fees-main {
+            margin-left: 0 !important;
+            padding-top: 64px !important;
+          }
+          .fees-content {
+            padding: 16px !important;
+          }
+          .fees-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .fees-summary-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .fees-content {
+            padding: 12px !important;
+          }
+          .fees-summary-grid {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+          }
+        }
+      `}</style>
+      <div style={{ 
+        display: 'flex', 
+        minHeight: '100vh', 
+        background: currentColors.background,
+        fontFamily: typography.fontFamily,
+        position: 'relative'
+      }}>
       <StudentSidebar 
         activeTab={'fees'} 
         setActiveTab={() => {
@@ -73,7 +102,7 @@ const StudentFees = () => {
         isCollapsed={isCollapsed} 
         setIsCollapsed={setIsCollapsed} 
       />
-      <div style={{ 
+      <div className="fees-main" style={{ 
         flex: 1, 
         marginLeft: isCollapsed ? '80px' : '280px', 
         transition: 'margin-left 0.3s ease',
@@ -84,7 +113,7 @@ const StudentFees = () => {
           isCollapsed={isCollapsed} 
           onToggleSidebar={() => setIsCollapsed(!isCollapsed)}
         />
-        <div style={{ 
+        <div className="fees-content" style={{ 
           padding: `${spacing['3xl']} ${spacing.xl} ${spacing.xl} ${spacing.xl}`,
           minHeight: 'calc(100vh - 64px)',
           position: 'relative',
@@ -262,6 +291,7 @@ const StudentFees = () => {
       </div>
       <AIChatbot />
     </div>
+    </>
   );
 };
 

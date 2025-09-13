@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -35,6 +35,15 @@ const StudentSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }
     { id: 'gaps', label: 'Study Gaps', icon: Clock, color: '#FD7E14' },
     { id: 'feedback', label: 'Feedback', icon: MessageSquare, color: '#20C997' }
   ];
+
+  // Optimized click handler to prevent multiple rapid clicks
+  const handleItemClick = useCallback((item) => {
+    if (item.id === 'fees') {
+      navigate('/student/fees');
+    } else {
+      setActiveTab(item.id);
+    }
+  }, [navigate, setActiveTab]);
 
   return (
     <Sidebar isCollapsed={isCollapsed} width={280} collapsedWidth={80}>
@@ -103,13 +112,7 @@ const StudentSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }
                 icon={<Icon size={20} style={{ color: activeTab === item.id ? currentColors.sidebarAccent : 'currentColor' }} />}
                 label={!isCollapsed ? item.label : ''}
                 active={activeTab === item.id}
-                onClick={() => {
-                  if (item.id === 'fees') {
-                    navigate('/student/fees');
-                  } else {
-                    setActiveTab(item.id);
-                  }
-                }}
+                onClick={() => handleItemClick(item)}
                 style={{
                   marginBottom: '4px',
                   position: 'relative'

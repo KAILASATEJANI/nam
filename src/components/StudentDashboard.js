@@ -46,7 +46,7 @@ const StudentDashboard = () => {
   const { typography, spacing, borderRadius } = useTheme();
 
   const [activeTab, setActiveTab] = useState('timetable');
-  const [isPending, startTransition] = useTransition();
+  const [isTabSwitching, setIsTabSwitching] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -74,32 +74,37 @@ const StudentDashboard = () => {
 
   
 
-  // Sync active tab with URL query (?tab=...)
+  // Optimized tab switching with debouncing to prevent blinking
+  const setTabSmooth = useCallback((tab) => {
+    if (tab === activeTab || isTabSwitching) return; // Prevent unnecessary updates
+    
+    setIsTabSwitching(true);
+    
+    // Use requestAnimationFrame to ensure smooth transitions
+    requestAnimationFrame(() => {
+      setActiveTab(tab);
+      
+      // Update URL without causing re-renders
+      const params = new URLSearchParams(location.search);
+      params.set('tab', tab);
+      const newUrl = `${location.pathname}?${params.toString()}`;
+      
+      // Use replace to avoid adding to history stack
+      window.history.replaceState(null, '', newUrl);
+      
+      // Reset switching state after a brief delay
+      setTimeout(() => setIsTabSwitching(false), 100);
+    });
+  }, [activeTab, isTabSwitching, location.pathname, location.search]);
+
+  // Sync active tab with URL query on initial load only
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tabFromQuery = params.get('tab');
     if (tabFromQuery && tabFromQuery !== activeTab) {
       setActiveTab(tabFromQuery);
     }
-  }, [location.search, activeTab]);
-
-  // Keep URL in sync when tab changes
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const current = params.get('tab');
-    if (!activeTab) return;
-    if (current !== activeTab) {
-      params.set('tab', activeTab);
-      navigate(`${location.pathname}?${params.toString()}`, { replace: true });
-    }
-  }, [activeTab, location.pathname, location.search, navigate]);
-
-  // Transitioned tab setter to keep UI responsive during heavy tab switches
-  const setTabSmooth = useCallback((tab) => {
-    startTransition(() => {
-      setActiveTab(tab);
-    });
-  }, []);
+  }, []); // Only run on mount
 
   useEffect(() => {
     const loadAll = async () => {
@@ -198,7 +203,7 @@ const StudentDashboard = () => {
   
 
   const renderTimetableCard = () => (
-    <Card padding="xl" hover>
+    <Card className="timetable-card" padding="xl" hover>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -414,7 +419,7 @@ const StudentDashboard = () => {
       <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600', color: '#1f2937' }}>
         <CheckCircle size={20} style={{ marginRight: '8px', color: '#10b981' }} /> Attendance Tracker
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+      <div className="dashboard-grid-3fr" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
         {attendance.subjects.map((subject, idx) => {
           const pct = Math.round(subject.percentage);
           const color = pct >= 90 ? '#10b981' : pct >= 75 ? '#f59e0b' : '#ef4444';
@@ -599,7 +604,7 @@ const StudentDashboard = () => {
         <BarChart3 size={20} style={{ marginRight: '8px', color: '#06b6d4' }} />
         My Analytics
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+      <div className="dashboard-grid-2fr" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
         <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '8px' }}>
           <Pie data={pieData} />
           </div>
@@ -789,7 +794,7 @@ const StudentDashboard = () => {
       <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '600', color: '#1f2937' }}>
         <MapPin size={20} style={{ marginRight: '8px', color: '#10b981' }} /> Classroom & Resource Booking
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+      <div className="dashboard-grid-2fr" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
         <select value={bookingForm.resourceType} onChange={(e) => setBookingForm({ ...bookingForm, resourceType: e.target.value })}>
           <option>Lab</option>
           <option>Project Room</option>
@@ -843,16 +848,16 @@ const StudentDashboard = () => {
     </div>
   );
 
-  const renderContent = () => {
+  const renderContent = useMemo(() => {
     switch (activeTab) {
       case 'timetable':
         return (
           <div>
             {renderHeaderBar()}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+          <div className="dashboard-grid-2fr-1fr" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {renderTimetableCard()}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div className="dashboard-grid-1fr-1fr" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
               {renderAttendanceTracker()}
                   {renderStudyMaterials()}
                 </div>
@@ -899,23 +904,71 @@ const StudentDashboard = () => {
       default:
         return null;
     }
-  };
+  }, [activeTab, user, fees, paymentForm, handlePayment, renderHeaderBar, renderTimetableCard, renderAttendanceTracker, renderStudyMaterials, renderAnalytics, renderTimeline, renderFeedbackWidget, renderRightSidebar, renderFeesCard]);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh', 
-      background: currentColors.background,
-      fontFamily: typography.fontFamily,
-      position: 'relative'
-    }}>
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .dashboard-main {
+            margin-left: 0 !important;
+            padding-top: 64px !important;
+          }
+          .dashboard-content {
+            padding: 16px !important;
+          }
+          .dashboard-grid-2fr-1fr {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .dashboard-grid-1fr-1fr {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          .dashboard-grid-3fr {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .dashboard-grid-2fr {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .card {
+            padding: 16px !important;
+          }
+          .timetable-card {
+            overflow-x: auto !important;
+          }
+          .timetable-grid {
+            min-width: 600px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .dashboard-content {
+            padding: 12px !important;
+          }
+          .card {
+            padding: 12px !important;
+          }
+          .timetable-grid {
+            min-width: 500px !important;
+          }
+        }
+      `}</style>
+      <div style={{ 
+        display: 'flex', 
+        minHeight: '100vh', 
+        background: currentColors.background,
+        fontFamily: typography.fontFamily,
+        position: 'relative'
+      }}>
       <StudentSidebar 
         activeTab={activeTab} 
         setActiveTab={setTabSmooth} 
         isCollapsed={isCollapsed} 
         setIsCollapsed={setIsCollapsed} 
       />
-      <div style={{ 
+      <div className="dashboard-main" style={{ 
         flex: 1, 
         marginLeft: isCollapsed ? '80px' : '280px', 
         transition: 'margin-left 0.3s ease',
@@ -926,17 +979,37 @@ const StudentDashboard = () => {
           isCollapsed={isCollapsed} 
           onToggleSidebar={() => setIsCollapsed(!isCollapsed)}
         />
-        <div style={{ 
+        <div className="dashboard-content" style={{ 
           padding: `${spacing['3xl']} ${spacing.xl} ${spacing.xl} ${spacing.xl}`,
           minHeight: 'calc(100vh - 64px)',
           position: 'relative',
           zIndex: 1
         }}>
-          {renderContent()}
+          {isTabSwitching ? (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '200px',
+              opacity: 0.7
+            }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                border: '3px solid #f3f3f3',
+                borderTop: '3px solid #667eea',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite'
+              }}></div>
+            </div>
+          ) : (
+            renderContent
+          )}
         </div>
       </div>
       <AIChatbot />
     </div>
+    </>
   );
 };
 

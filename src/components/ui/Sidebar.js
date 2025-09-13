@@ -28,12 +28,28 @@ const Sidebar = ({
   };
 
   return (
-    <aside 
-      className={`ui-sidebar ${isCollapsed ? 'ui-sidebar--collapsed' : ''} ${className}`}
-      style={sidebarStyles}
-    >
-      {children}
-    </aside>
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .ui-sidebar {
+            transform: translateX(-100%) !important;
+            transition: transform 0.3s ease !important;
+          }
+          .ui-sidebar.ui-sidebar--mobile-open {
+            transform: translateX(0) !important;
+          }
+          .ui-sidebar--collapsed {
+            transform: translateX(-100%) !important;
+          }
+        }
+      `}</style>
+      <aside 
+        className={`ui-sidebar ${isCollapsed ? 'ui-sidebar--collapsed' : ''} ${className}`}
+        style={sidebarStyles}
+      >
+        {children}
+      </aside>
+    </>
   );
 };
 
@@ -137,11 +153,19 @@ const SidebarItem = ({
       className={`ui-sidebar__item ${active ? 'ui-sidebar__item--active' : ''} ${className}`}
       style={itemStyles}
       onClick={onClick}
-      onMouseEnter={(e) => Object.assign(e.target.style, hoverStyles)}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget;
+        el.style.background = hoverStyles.background;
+        el.style.color = hoverStyles.color;
+      }}
       onMouseLeave={(e) => {
-        if (!active) {
-          e.target.style.background = 'transparent';
-          e.target.style.color = currentColors.textMuted;
+        const el = e.currentTarget;
+        if (active) {
+          el.style.background = currentColors.sidebarActive;
+          el.style.color = currentColors.textLight;
+        } else {
+          el.style.background = 'transparent';
+          el.style.color = currentColors.textMuted;
         }
       }}
     >

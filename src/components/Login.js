@@ -69,7 +69,44 @@ const Login = () => {
       justifyContent: 'center',
       padding: '20px'
     }}>
-      <style>{`@media (max-width: 768px){.login-card{flex-direction:column;max-width:560px}.login-illustration{display:none}}`}</style>
+      <style>{`
+        @media (max-width: 768px) {
+          .login-card {
+            flex-direction: column !important;
+            max-width: 100% !important;
+            margin: 20px !important;
+            min-height: auto !important;
+          }
+          .login-illustration {
+            display: none !important;
+          }
+          .login-form {
+            padding: 40px 20px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .login-container {
+            padding: 10px !important;
+          }
+          .login-card {
+            margin: 10px !important;
+            border-radius: 20px !important;
+          }
+          .login-form {
+            padding: 30px 15px !important;
+          }
+          .form-header h2 {
+            font-size: 22px !important;
+          }
+          .role-buttons {
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          .role-buttons button {
+            width: 100% !important;
+          }
+        }
+      `}</style>
       <div className="login-card" style={{
         background: 'rgba(255,255,255,0.55)',
         border: '1px solid rgba(255,255,255,0.35)',
@@ -240,7 +277,7 @@ const Login = () => {
               }}>
                 Select Role
               </label>
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <div className="role-buttons" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {roleOptions.map((role) => (
                   <button
                     key={role.value}

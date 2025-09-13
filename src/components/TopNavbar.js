@@ -43,7 +43,43 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <div className="top-navbar" style={{
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .top-navbar {
+            left: 0 !important;
+            padding: 0 16px !important;
+          }
+          .search-bar {
+            display: none !important;
+          }
+          .navbar-right {
+            gap: 8px !important;
+          }
+          .navbar-right button {
+            padding: 8px !important;
+          }
+          .profile-dropdown {
+            right: 16px !important;
+            left: auto !important;
+            width: 200px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .top-navbar {
+            padding: 0 12px !important;
+          }
+          .navbar-right button {
+            padding: 6px !important;
+          }
+          .notification-badge {
+            font-size: 10px !important;
+            min-width: 16px !important;
+            height: 16px !important;
+          }
+        }
+      `}</style>
+      <div className="top-navbar" style={{
       height: '64px',
       background: currentColors.surface,
       borderBottom: `1px solid ${currentColors.divider}`,
@@ -59,7 +95,8 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
       zIndex: 999,
       fontFamily: typography.fontFamily,
       transition: 'left 0.3s ease',
-      color: currentColors.text
+      color: currentColors.text,
+      minWidth: 0
     }}>
       {/* Left Section - Mobile Menu & Search */}
       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.lg, flex: 1 }}>
@@ -80,12 +117,14 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = currentColors.borderLight;
-            e.target.style.color = currentColors.text;
+            const el = e.currentTarget;
+            el.style.background = currentColors.borderLight;
+            el.style.color = currentColors.text;
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'transparent';
-            e.target.style.color = currentColors.textSecondary;
+            const el = e.currentTarget;
+            el.style.background = 'transparent';
+            el.style.color = currentColors.textSecondary;
           }}
         >
           <Menu size={20} />
@@ -115,19 +154,21 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = currentColors.borderLight;
-            e.target.style.color = currentColors.text;
+            const el = e.currentTarget;
+            el.style.background = currentColors.borderLight;
+            el.style.color = currentColors.text;
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'transparent';
-            e.target.style.color = currentColors.textSecondary;
+            const el = e.currentTarget;
+            el.style.background = 'transparent';
+            el.style.color = currentColors.textSecondary;
           }}
         >
           <Home size={20} />
         </button>
 
         {/* Search Bar */}
-        <div style={{ position: 'relative', flex: 1, maxWidth: '500px' }}>
+        <div className="search-bar" style={{ position: 'relative', flex: 1, maxWidth: '500px' }}>
           <Search 
             size={20} 
             style={{ 
@@ -171,7 +212,7 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
       </div>
 
       {/* Right Section - Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
+      <div className="navbar-right" style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
         {/* Language Dropdown */}
         <div style={{ position: 'relative' }}>
           <button
@@ -189,12 +230,14 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
               transition: 'all 0.2s ease'
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = currentColors.borderLight;
-              e.target.style.color = currentColors.text;
+              const el = e.currentTarget;
+              el.style.background = currentColors.borderLight;
+              el.style.color = currentColors.text;
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = 'transparent';
-              e.target.style.color = currentColors.textSecondary;
+              const el = e.currentTarget;
+              el.style.background = 'transparent';
+              el.style.color = currentColors.textSecondary;
             }}
           >
             <Globe size={16} />
@@ -222,12 +265,14 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
               transition: 'all 0.2s ease'
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = currentColors.borderLight;
-              e.target.style.color = currentColors.text;
+              const el = e.currentTarget;
+              el.style.background = currentColors.borderLight;
+              el.style.color = currentColors.text;
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = 'transparent';
-              e.target.style.color = currentColors.textSecondary;
+              const el = e.currentTarget;
+              el.style.background = 'transparent';
+              el.style.color = currentColors.textSecondary;
             }}
           >
             <Bell size={20} />
@@ -287,10 +332,10 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
                       background: notification.unread ? currentColors.primaryLight : 'transparent'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = currentColors.borderLight;
+                      e.currentTarget.style.background = currentColors.borderLight;
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.background = notification.unread ? currentColors.primaryLight : 'transparent';
+                      e.currentTarget.style.background = notification.unread ? currentColors.primaryLight : 'transparent';
                     }}
                   >
                     <div style={{
@@ -331,10 +376,10 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
               transition: 'all 0.2s ease'
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = currentColors.borderLight;
+              e.currentTarget.style.background = currentColors.borderLight;
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = 'transparent';
+              e.currentTarget.style.background = 'transparent';
             }}
           >
             <div style={{
@@ -364,7 +409,7 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
 
           {/* Profile Dropdown */}
           {showProfile && (
-            <div style={{
+            <div className="profile-dropdown" style={{
               position: 'absolute',
               top: '100%',
               right: 0,
@@ -402,12 +447,14 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = currentColors.borderLight;
-                    e.target.style.color = currentColors.text;
+                    const el = e.currentTarget;
+                    el.style.background = currentColors.borderLight;
+                    el.style.color = currentColors.text;
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                    e.target.style.color = currentColors.textSecondary;
+                    const el = e.currentTarget;
+                    el.style.background = 'transparent';
+                    el.style.color = currentColors.textSecondary;
                   }}
                 >
                   <User size={16} />
@@ -429,12 +476,14 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = currentColors.borderLight;
-                    e.target.style.color = currentColors.text;
+                    const el = e.currentTarget;
+                    el.style.background = currentColors.borderLight;
+                    el.style.color = currentColors.text;
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                    e.target.style.color = currentColors.textSecondary;
+                    const el = e.currentTarget;
+                    el.style.background = 'transparent';
+                    el.style.color = currentColors.textSecondary;
                   }}
                 >
                   <Settings size={16} />
@@ -460,10 +509,10 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.background = currentColors.dangerLight;
+                    e.currentTarget.style.background = currentColors.dangerLight;
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
+                    e.currentTarget.style.background = 'transparent';
                   }}
                 >
                   <LogOut size={16} />
@@ -475,6 +524,7 @@ const TopNavbar = ({ isCollapsed, onToggleSidebar }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
